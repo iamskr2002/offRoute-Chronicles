@@ -1,0 +1,51 @@
+{
+  "name": "Destination",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Destination name"
+    },
+    "country": {
+      "type": "string",
+      "description": "Country"
+    },
+    "description": {
+      "type": "string",
+      "description": "Short description"
+    },
+    "image": {
+      "type": "string",
+      "description": "Main image URL"
+    },
+    "continent": {
+      "type": "string",
+      "enum": [
+        "europe",
+        "asia",
+        "africa",
+        "north_america",
+        "south_america",
+        "oceania",
+        "antarctica"
+      ],
+      "description": "Continent"
+    },
+    "best_season": {
+      "type": "string",
+      "description": "Best time to visit"
+    },
+    "highlights": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Top highlights"
+    }
+  },
+  "required": [
+    "name",
+    "country",
+    "image"
+  ]
+}
