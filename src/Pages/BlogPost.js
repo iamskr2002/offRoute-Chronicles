@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '../api/base44Client';
 import { motion } from 'framer-motion';
-import { Clock, MapPin, ArrowLeft, Calendar, Share2 } from 'lucide-react';
+import { Clock, MapPin, ArrowLeft, Calendar, Share2, Image as ImageIcon } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import ReactMarkdown from 'react-markdown';
@@ -36,6 +36,12 @@ export default function BlogPost() {
       return allPosts.filter(p => p.category === post.category && p.id !== id).slice(0, 3);
     },
     enabled: !!post?.category,
+  });
+
+  const { data: galleryImages = [] } = useQuery({
+    queryKey: ['galleryImages', id],
+    queryFn: () => base44.entities.GalleryImage.list(id),
+    enabled: !!id,
   });
 
   if (isLoading) {
@@ -214,7 +220,10 @@ export default function BlogPost() {
               transition={{ delay: 0.4 }}
               className="mt-16"
             >
-              <h3 className="text-2xl font-light text-[#1a1a2e] mb-6">Photo Gallery</h3>
+              <div className="flex items-center gap-3 mb-6">
+                <ImageIcon className="w-6 h-6 text-[#c17f59]" />
+                <h3 className="text-2xl font-light text-[#1a1a2e]">Photo Gallery</h3>
+              </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {post.gallery_images.map((image, index) => (
                   <motion.div
@@ -222,13 +231,55 @@ export default function BlogPost() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.5 + index * 0.1 }}
-                    className="aspect-square rounded-xl overflow-hidden"
+                    className="aspect-square rounded-xl overflow-hidden group"
                   >
                     <img
                       src={image}
                       alt={`Gallery ${index + 1}`}
-                      className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Database Gallery Section */}
+          {galleryImages && galleryImages.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="mt-16"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <ImageIcon className="w-6 h-6 text-[#c17f59]" />
+                <h3 className="text-2xl font-light text-[#1a1a2e]">Photo Gallery</h3>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {galleryImages.map((image, index) => (
+                  <motion.div
+                    key={image.id || index}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.5 + index * 0.1 }}
+                    className="aspect-square rounded-xl overflow-hidden group relative"
+                  >
+                    <img
+                      src={image.image_url}
+                      alt={image.alt_text || `Gallery ${index + 1}`}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      onError={(e) => {
+                        e.target.src = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=500&fit=crop';
+                      }}
+                    />
+                    {image.alt_text && (
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-end">
+                        <p className="text-white text-sm p-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {image.alt_text}
+                        </p>
+                      </div>
+                    )}
                   </motion.div>
                 ))}
               </div>
@@ -242,11 +293,19 @@ export default function BlogPost() {
 
       {/* Related Posts */}
       {relatedPosts.length > 0 && (
-        <section className="py-16 px-4 md:px-8 bg-[#1a1a2e]">
+        <section className="py-16 px-4 md:px-8 bg-gradient-to-b from-[#faf9f7] to-[#1a1a2e]">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl font-light text-white mb-10">
-              More <span className="italic font-serif text-[#c17f59]">Stories</span>
-            </h2>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-12"
+            >
+              <h2 className="text-3xl font-light text-[#1a1a2e] mb-3">
+                Explore More <span className="italic font-serif text-[#c17f59]">Stories</span>
+              </h2>
+              <p className="text-gray-600">Discover similar stories and expand your travel inspiration</p>
+            </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {relatedPosts.map((related, index) => (
                 <motion.article
@@ -257,8 +316,8 @@ export default function BlogPost() {
                   transition={{ delay: index * 0.1 }}
                 >
                   <Link to={`/blog/${related.id}`}>
-                    <div className="group cursor-pointer">
-                      <div className="relative h-48 rounded-2xl overflow-hidden mb-4">
+                    <div className="group cursor-pointer h-full">
+                      <div className="relative h-56 rounded-2xl overflow-hidden mb-4">
                         <img
                           src={related.image}
                           alt={related.title}
@@ -267,10 +326,23 @@ export default function BlogPost() {
                             e.target.src = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=350&fit=crop';
                           }}
                         />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                            <p className="text-white text-sm font-medium">View Photos & Story</p>
+                          </div>
+                        </div>
                       </div>
-                      <h3 className="text-lg text-white group-hover:text-[#c17f59] transition-colors">
-                        {related.title}
-                      </h3>
+                      <div className="px-2">
+                        <span className="text-xs text-[#c17f59] font-semibold uppercase tracking-wide">
+                          {related.category}
+                        </span>
+                        <h3 className="text-lg font-serif font-bold text-[#1a1a2e] group-hover:text-[#c17f59] transition-colors mt-2 line-clamp-2">
+                          {related.title}
+                        </h3>
+                        <p className="text-sm text-gray-600 mt-2 line-clamp-2">
+                          {related.excerpt}
+                        </p>
+                      </div>
                     </div>
                   </Link>
                 </motion.article>

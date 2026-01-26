@@ -30,7 +30,7 @@ export default function HeroSection() {
         className="absolute inset-0"
       >
         <motion.img
-          src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920&q=80"
+          src="https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=1920&q=80"
           alt="Travel Hero"
           className="w-full h-full object-cover"
           style={{
@@ -50,7 +50,7 @@ export default function HeroSection() {
           y: [0, -20, 0],
           rotate: [0, 5, 0],
         }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
         className="absolute top-20 left-10 w-32 h-32 rounded-full bg-[#c17f59]/20 blur-3xl"
       />
       <motion.div
@@ -58,7 +58,7 @@ export default function HeroSection() {
           y: [0, 20, 0],
           rotate: [0, -5, 0],
         }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
         className="absolute bottom-40 right-20 w-48 h-48 rounded-full bg-[#87a878]/20 blur-3xl"
       />
 
@@ -70,7 +70,7 @@ export default function HeroSection() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
           className="flex items-center gap-2 text-[#f4e8d8]/80 mb-6"
         >
           <MapPin className="w-4 h-4" />
@@ -80,7 +80,7 @@ export default function HeroSection() {
         <motion.h1
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.4 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
           className="text-5xl md:text-7xl lg:text-8xl font-light text-white mb-6 tracking-tight"
         >
           <span className="block">offRoute</span>
@@ -97,7 +97,7 @@ export default function HeroSection() {
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
           className="text-lg md:text-xl text-[#f4e8d8]/70 max-w-xl font-light leading-relaxed"
         >
           Journey through breathtaking destinations, immerse in cultures, 
@@ -107,7 +107,7 @@ export default function HeroSection() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1.2 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
           className="mt-12 flex gap-4"
         >
           <Link to={createPageUrl('Stories')}>
@@ -132,7 +132,7 @@ export default function HeroSection() {
       >
         <motion.div
           animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          transition={{ duration: 1.2, repeat: Infinity }}
           className="flex flex-col items-center text-white/50"
         >
           <span className="text-xs tracking-widest uppercase mb-2">Scroll</span>

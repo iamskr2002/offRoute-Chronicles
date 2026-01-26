@@ -44,33 +44,52 @@ export default function Stories() {
   });
 
   return (
-    <div className="min-h-screen bg-[#faf9f7] pt-20">
-      <div className="max-w-7xl mx-auto px-4 md:px-8">
-        {/* Header */}
+    <div className="min-h-screen bg-[#faf9f7]">
+      {/* Hero Section with Background */}
+      <section className="relative h-64 md:h-80 overflow-hidden pt-20">
+        <motion.img
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.5 }}
+          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80"
+          alt="Stories background"
+          className="absolute inset-0 w-full h-full object-cover"
+          onError={(e) => {
+            e.target.src = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80';
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1a1a2e]/70 via-[#1a1a2e]/60 to-[#faf9f7]" />
+        
+        {/* Header Content */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4"
         >
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#1a1a2e] mb-4">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
             Travel <span className="text-[#c17f59]">Stories</span>
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-white/90 max-w-2xl mx-auto">
             Discover inspiring travel stories from around the world
           </p>
         </motion.div>
+      </section>
+
+      <div className="max-w-7xl mx-auto px-4 md:px-8 pt-8">
 
         {/* Search and Filters */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="mb-12"
+          className="mb-12 pt-8"
         >
           <div className="flex flex-col gap-4 mb-6">
             <div className="relative">
               <Search className="absolute left-3 top-3 text-gray-400" size={20} />
               <Input
+                id="search-stories"
+                name="search"
                 placeholder="Search stories..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -109,38 +128,67 @@ export default function Stories() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ delay: index * 0.05 }}
+                className="cursor-pointer"
               >
                 <Link to={`/blog/${post.id}`}>
-                  <motion.div className="bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition-all h-full cursor-pointer flex flex-col">
-                    <div className="w-full h-64 bg-gray-200 overflow-hidden flex-shrink-0 relative group">
-                      <img
+                  <motion.div 
+                    className="group"
+                    whileHover={{ y: -8 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {/* Image Container */}
+                    <div className="relative h-64 rounded-3xl overflow-hidden mb-4">
+                      <motion.img
                         src={post.image || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=500&h=350&fit=crop'}
                         alt={post.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover"
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.6 }}
                         onError={(e) => {
                           e.target.src = 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=500&h=350&fit=crop';
                         }}
                       />
+                      {/* Category Badge */}
+                      <motion.span 
+                        initial={{ opacity: 0, y: -10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        className={`absolute top-4 left-4 text-xs font-semibold px-3 py-1 rounded-full text-white ${categoryColors[post.category] || 'bg-gray-500'}`}
+                      >
+                        {post.category}
+                      </motion.span>
+                      
+                      {/* Read More Icon */}
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0 }}
+                        whileHover={{ opacity: 1, scale: 1 }}
+                        className="absolute bottom-4 right-4 w-12 h-12 bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300"
+                      >
+                        <ArrowUpRight className="w-5 h-5 text-[#1a1a2e]" />
+                      </motion.div>
                     </div>
-                    <div className="p-6 flex-grow flex flex-col">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className={`text-xs font-semibold px-3 py-1 rounded-full text-white ${categoryColors[post.category] || 'bg-gray-500'}`}>
-                          {post.category}
+
+                    {/* Content Container */}
+                    <div className="px-2">
+                      {/* Metadata */}
+                      <div className="flex items-center gap-3 text-gray-500 text-sm mb-2">
+                        <span className="flex items-center gap-1">
+                          📍 {post.author}
                         </span>
-                        <div className="flex items-center text-sm text-gray-500">
-                          <Clock size={14} className="mr-1" />
-                          {post.author}
-                        </div>
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          {post.read_time || 5} min
+                        </span>
                       </div>
-                      <h3 className="text-lg font-serif font-bold text-[#1a1a2e] mb-2">
+
+                      {/* Title */}
+                      <h3 className="text-lg font-light text-[#1a1a2e] mb-2 group-hover:text-[#c17f59] transition-colors line-clamp-2">
                         {post.title}
                       </h3>
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+
+                      {/* Excerpt */}
+                      <p className="text-gray-600 text-sm line-clamp-2 mb-3">
                         {post.excerpt}
                       </p>
-                      <div className="flex items-center text-[#c17f59] font-semibold">
-                        Read More <ArrowUpRight size={16} className="ml-2" />
-                      </div>
                     </div>
                   </motion.div>
                 </Link>

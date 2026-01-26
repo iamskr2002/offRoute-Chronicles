@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Clock, ArrowUpRight } from 'lucide-react';
+import { Clock, ArrowUpRight, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../../utils';
 
@@ -15,7 +15,7 @@ const categoryColors = {
 };
 
 export default function BlogGrid({ posts }) {
-  const nonFeatured = posts?.filter(p => !p.featured) || [];
+  const nonFeatured = posts?.filter(p => p.featured !== true) || [];
 
   if (nonFeatured.length === 0) return null;
 
@@ -27,7 +27,7 @@ export default function BlogGrid({ posts }) {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.5 }}
           className="flex flex-col md:flex-row md:items-end md:justify-between mb-16 gap-4"
         >
           <div>
@@ -53,7 +53,7 @@ export default function BlogGrid({ posts }) {
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              transition={{ duration: 0.5, delay: index * 0.08 }}
             >
               <Link to={`/blog/${post.id}`}>
                 <div className="group cursor-pointer">

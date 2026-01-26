@@ -1,5 +1,49 @@
-// Mock API client for Base44 (replace with your actual API)
-// This is a placeholder that returns mock data
+// API Client for Base44 - Supports both Mock and Supabase
+// Set USE_SUPABASE = true to use real database
+// Set USE_SUPABASE = false to use mock data
+
+console.log('🔍 Base44 Client Loading...');
+console.log('REACT_APP_SUPABASE_URL:', process.env.REACT_APP_SUPABASE_URL ? '✅ Set' : '❌ Not set');
+console.log('REACT_APP_SUPABASE_ANON_KEY:', process.env.REACT_APP_SUPABASE_ANON_KEY ? '✅ Set' : '❌ Not set');
+
+const USE_SUPABASE = process.env.REACT_APP_SUPABASE_URL ? true : false;
+console.log('USE_SUPABASE:', USE_SUPABASE);
+
+let supabaseClient = null;
+let supabasePromise = null;
+
+// Initialize Supabase if credentials are provided
+function initializeSupabase() {
+  console.log('🚀 Initializing Supabase...');
+  if (supabasePromise || !USE_SUPABASE) {
+    console.log('⏭️ Supabase already initializing or not needed');
+    return Promise.resolve(null);
+  }
+  
+  supabasePromise = (async () => {
+    try {
+      console.log('📦 Importing @supabase/supabase-js...');
+      const { createClient } = await import('@supabase/supabase-js');
+      console.log('✅ Supabase module imported');
+      
+      supabaseClient = createClient(
+        process.env.REACT_APP_SUPABASE_URL,
+        process.env.REACT_APP_SUPABASE_ANON_KEY
+      );
+      console.log('✅ Supabase client created successfully!');
+      return supabaseClient;
+    } catch (error) {
+      console.error('❌ Supabase initialization failed:', error);
+      return null;
+    }
+  })();
+  
+  return supabasePromise;
+}
+
+// Start initialization immediately
+console.log('🎯 Starting Supabase initialization...');
+initializeSupabase();
 
 const mockBlogPosts = [
   {
@@ -75,17 +119,73 @@ class Base44Client {
     this.entities = {
       BlogPost: {
         list: async (sort) => {
-          // Simulate network delay
-          await new Promise(resolve => setTimeout(resolve, 300));
+          console.log('📋 BlogPost.list() called with sort:', sort);
           
-          // Return mock blog posts
+          // Wait for Supabase to initialize
+          if (USE_SUPABASE) {
+            console.log('⏳ Waiting for Supabase to initialize...');
+            await supabasePromise;
+            console.log('✅ Supabase initialization complete, supabaseClient is:', supabaseClient ? 'Connected' : 'null');
+          }
+          
+          // Use Supabase if available
+          if (supabaseClient) {
+            try {
+              console.log('🔄 Fetching posts from Supabase...');
+              let query = supabaseClient
+                .from('blog_posts')
+                .select('*');
+              
+              if (sort === '-created_date') {
+                query = query.order('created_date', { ascending: false });
+              }
+              
+              const { data, error } = await query;
+              
+              if (error) {
+                console.error('❌ Supabase error:', error);
+                throw error;
+              }
+              console.log('✅ Fetched from Supabase:', data?.length || 0, 'posts');
+              return data || mockBlogPosts;
+            } catch (error) {
+              console.error('❌ Error fetching from Supabase:', error.message);
+              console.log('📦 Falling back to mock data');
+              return mockBlogPosts;
+            }
+          }
+          
+          // Fall back to mock data
+          console.log('📦 Using mock data (', mockBlogPosts.length, 'posts)');
           if (sort === '-created_date') {
             return [...mockBlogPosts].sort((a, b) => b.created_date - a.created_date);
           }
           return mockBlogPosts;
         },
         get: async (id) => {
-          await new Promise(resolve => setTimeout(resolve, 200));
+          // Wait for Supabase to initialize
+          if (USE_SUPABASE) {
+            await supabasePromise;
+          }
+          
+          // Use Supabase if available
+          if (supabaseClient) {
+            try {
+              const { data, error } = await supabaseClient
+                .from('blog_posts')
+                .select('*')
+                .eq('id', id)
+                .single();
+              
+              if (error) throw error;
+              return data || mockBlogPosts.find(post => post.id === id);
+            } catch (error) {
+              console.error('Supabase error:', error);
+              return mockBlogPosts.find(post => post.id === id);
+            }
+          }
+          
+          // Fall back to mock data
           return mockBlogPosts.find(post => post.id === id) || {
             id,
             title: 'Blog Post Not Found',
@@ -95,9 +195,59 @@ class Base44Client {
           };
         },
       },
+      GalleryImage: {
+        list: async (postId) => {
+          // Wait for Supabase to initialize
+          if (USE_SUPABASE) {
+            await supabasePromise;
+          }
+          
+          // Use Supabase if available
+          if (supabaseClient) {
+            try {
+              const { data, error } = await supabaseClient
+                .from('gallery_images')
+                .select('*')
+                .eq('post_id', postId)
+                .order('created_date', { ascending: true });
+              
+              if (error) throw error;
+              return data || [];
+            } catch (error) {
+              console.error('Supabase error:', error);
+              return [];
+            }
+          }
+          
+          // Fall back to empty array for mock data
+          return [];
+        },
+      },
       Destination: {
         list: async () => {
-          await new Promise(resolve => setTimeout(resolve, 300));
+          // Wait for Supabase to initialize
+          if (USE_SUPABASE) {
+            await supabasePromise;
+          }
+          
+          // Use Supabase if available
+          if (supabaseClient) {
+            try {
+              const { data, error } = await supabaseClient
+                .from('destinations')
+                .select('*');
+              
+              if (error) throw error;
+              if (data && data.length > 0) {
+                console.log('📦 Fetched from Supabase:', data.length, 'destinations');
+                return data;
+              }
+            } catch (error) {
+              console.error('Supabase error:', error);
+            }
+          }
+          
+          // Fall back to mock data (default destinations)
           return [
             {
               id: '1',

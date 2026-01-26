@@ -75,6 +75,8 @@ export default function Newsletter() {
           <form onSubmit={handleSubmit} className="relative max-w-md mx-auto">
             <div className="relative">
               <Input
+                id="newsletter-email"
+                name="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}

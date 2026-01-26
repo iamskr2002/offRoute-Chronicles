@@ -80,6 +80,8 @@ export default function CommentSection({ postId }) {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <Input
+            id="comment-name"
+            name="name"
             type="text"
             placeholder="Your name *"
             value={name}
@@ -88,6 +90,8 @@ export default function CommentSection({ postId }) {
             required
           />
           <Input
+            id="comment-email"
+            name="email"
             type="email"
             placeholder="Your email (optional)"
             value={email}
@@ -97,6 +101,8 @@ export default function CommentSection({ postId }) {
         </div>
 
         <Textarea
+          id="comment-text"
+          name="comment"
           placeholder="Share your thoughts..."
           value={comment}
           onChange={(e) => setComment(e.target.value)}
@@ -174,6 +180,8 @@ export default function CommentSection({ postId }) {
                     className="ml-14 mt-4 bg-[#f4e8d8] rounded-lg p-4"
                   >
                     <Textarea
+                      id={`reply-text-${commentItem.id}`}
+                      name="reply"
                       placeholder="Write a reply..."
                       value={replyText}
                       onChange={(e) => setReplyText(e.target.value)}

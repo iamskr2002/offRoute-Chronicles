@@ -17,7 +17,7 @@ export default function FeaturedStories({ posts }) {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.5 }}
           className="mb-16"
         >
           <span className="text-[#c17f59] text-sm tracking-[0.3em] uppercase">Featured Stories</span>
@@ -34,7 +34,7 @@ export default function FeaturedStories({ posts }) {
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 0.5 }}
               className="lg:row-span-2"
             >
               <Link to={`/blog/${featured[0].id}`}>
@@ -91,7 +91,7 @@ export default function FeaturedStories({ posts }) {
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 <Link to={`/blog/${post.id}`}>
                   <div className="group relative h-[240px] rounded-3xl overflow-hidden cursor-pointer">

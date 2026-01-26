@@ -52,26 +52,28 @@ export default function Navbar() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => {
-              const isActive = location.pathname.includes(link.page);
+              const linkPath = link.page === 'Home' ? '/' : `/${link.page.toLowerCase()}`;
+              const isActive = location.pathname === linkPath || (linkPath !== '/' && location.pathname.startsWith(linkPath));
               return (
                 <Link
                   key={link.page}
                   to={createPageUrl(link.page)}
                   className="relative group"
                 >
-                  <span className={`text-sm tracking-wide transition-colors ${
-                    isScrolled 
-                      ? isActive ? 'text-[#c17f59]' : 'text-[#1a1a2e] hover:text-[#c17f59]'
-                      : isActive ? 'text-[#c17f59]' : 'text-white/90 hover:text-white'
-                  }`}>
-                    {link.label}
-                  </span>
                   <motion.span 
-                    className="absolute -bottom-1 left-0 h-0.5 bg-[#c17f59]"
-                    initial={{ width: isActive ? '100%' : 0 }}
+                    className={`text-sm tracking-wide transition-colors font-medium ${
+                      isScrolled 
+                        ? isActive ? 'text-[#c17f59]' : 'text-[#1a1a2e] group-hover:text-[#c17f59]'
+                        : isActive ? 'text-[#c17f59]' : 'text-white/90 group-hover:text-white'
+                    }`}
+                  >
+                    {link.label}
+                  </motion.span>
+                  <motion.span 
+                    className="absolute -bottom-2 left-0 h-1 bg-[#c17f59] rounded-full"
+                    animate={{ width: isActive ? '100%' : 0 }}
                     whileHover={{ width: '100%' }}
-                    transition={{ duration: 0.3 }}
-                    style={{ width: isActive ? '100%' : 0 }}
+                    transition={{ duration: 0.3, type: 'spring', stiffness: 100 }}
                   />
                 </Link>
               );
