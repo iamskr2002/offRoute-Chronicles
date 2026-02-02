@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Camera, Heart, Globe, Mail, Instagram, Twitter, Youtube } from 'lucide-react';
+import { MapPin, Camera, Heart, Globe, Mail, Instagram, Youtube } from 'lucide-react';
 import Newsletter from '../Components/travel/Newsletter';
 
 const stats = [
