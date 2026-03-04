@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '../api/base44Client';
 import { motion } from 'framer-motion';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, Compass, MapPin, Calendar } from 'lucide-react';
+import { ArrowLeft, Compass, Calendar } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 export default function DestinationDetail() {
